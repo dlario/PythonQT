@@ -1,0 +1,6 @@
+def init{RecordGroup.Abbreviation}Form(self):
+    self.block{RecordGroup.Abbreviation}Signals(True)
+    {BeginWidgetList}
+    {RecordGroup.Form.WidgetName}.{RecordGroup.Form.ClearWidget}
+    {EndWidgetList}
+    self.block{RecordGroup.Abbreviation}Signals(False)

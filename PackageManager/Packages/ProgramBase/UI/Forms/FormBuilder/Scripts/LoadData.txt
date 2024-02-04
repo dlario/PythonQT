@@ -1,0 +1,101 @@
+{region QComboBox, QListBox}
+def on_FTForm_load(self, Record_id):
+    qryRecord = session.query(FunctionList.id, FunctionList.ItemName)
+    self.ui.{RecordGroup.Form.WidgetName}.setModel(QueryTableModel(qryRecord))
+    self.ui.{RecordGroup.Form.WidgetName}.setModelColumn(1)
+{endregion}
+
+{region QTableView}
+def on_{RecordGroup.Form.WidgetName}_load(self):
+    meeting_id = int(self.ui.txtMeetingID.text())
+
+    qryAttendance = sessions["CommunicationManager"].query(MeetingAttendance)\
+        .filter_by(Meeting_id = meeting_id) \
+        .order_by(MeetingAttendance.DisplayOrder).all()
+
+    self.MeetingAttendanceModel2 = QStandardItemModel(0, 5)
+
+    for row, item in enumerate(qryAttendance):
+        qryAssociation = session.query(Company).filter_by(id=item.Association_id).first()
+        qryPerson = session.query(Person).filter_by(id=item.Person_id).first()
+        qryRole = session.query(ActivityRole).filter_by(id=item.Role_id).first()
+        qryAttendanceType = session.query(ActivityRole).filter_by(id=item.Role_id).first()
+
+        self.MeetingAttendanceModel2.setItem(row, 0, QStandardItem(str(item.id)))
+        self.MeetingAttendanceModel2.setItem(row, 1, QStandardItem(str(qryAssociation.Title)))
+        self.MeetingAttendanceModel2.setItem(row, 2, QStandardItem(str(qryPerson.FullName)))
+        self.MeetingAttendanceModel2.setItem(row, 3, QStandardItem(str(qryRole.NameText)))
+        #self.MeetingAttendanceModel2.setItem(row, 4, QStandardItem(str(qryRole.NameText)))
+
+    self.MeetingAttendanceModel2.setHeaderData(1, Qt.Horizontal, 'Association', role=Qt.DisplayRole)
+    self.MeetingAttendanceModel2.setHeaderData(2, Qt.Horizontal, 'Person', role=Qt.DisplayRole)
+    self.MeetingAttendanceModel2.setHeaderData(3, Qt.Horizontal, 'Role', role=Qt.DisplayRole)
+    self.MeetingAttendanceModel2.setHeaderData(4, Qt.Horizontal, 'AttendanceType', role=Qt.DisplayRole)
+
+
+    self.ui.tblMAPersons.setModel(self.ui.MeetingAttendanceModel2)
+    self.ui.tblMAPersons.setColumnWidth(0, 0)
+
+{endregion}
+
+{region QTreeView}
+def initAgendaTreeView(self):
+    treedict = {}
+    treedict["MasterSession"] = sessions["PackageManager"]
+    treedict["MasterTable"] = MasterTable
+    treedict["DescriptorTable"] = MeetingDescriptorTable
+    treedict["ItemTable"] = MeetingItemTable
+    treedict["TreeBuilder"] = MeetingBranchBuilder
+    treedict["Session"] = sessions["CommunicationManager"]
+    treedict["SessionName"] = "CommunicationManager"
+    treedict["TreeItems"] = MeetingTree
+    treedict["MasterTable_id"] = 1628  # References the Above Tree
+    treedict["Header"] = "Tree Header"
+    treedict["GeneratedSession"] = sessions["CommunicationManager"]
+    treedict["GeneratedTree"] = MeetingGeneratedTree
+    treedict["ComponentTable"] = MeetingComponents
+    treedict["TreeSettings"] = MeetingTreeSetting
+    treedict["PrimaryGroup"] = MeetingPrimaryGroup
+    treedict["SecondaryGroup"] = MeetingSecondaryGroup
+
+    self.ui.tvAgenda_2.setModel(None)
+
+    treemodel = TreeViewAlchemy2.linkedtreemodel(bases, sessions, treedict, header="Dave Rocks")
+    mrilist = []
+
+    SecondaryGroup_id = 2
+    PrimaryGroup_id = 2
+
+    modelrootitem = treedict["Session"].query(treedict["TreeItems"]).filter_by(ParentTree_id="(0)") \
+        .filter_by(PrimaryGroup_id=PrimaryGroup_id) \
+        .filter_by(SecondaryGroup_id=SecondaryGroup_id) \
+        .order_by(treedict["TreeItems"].ItemOrder) \
+        .order_by(treedict["TreeItems"].DisplayName).first()
+
+    if modelrootitem is not None:
+        data = {}
+        data["root_id"] = modelrootitem.id
+        data["SourcePG"] = PrimaryGroup_id
+        data["SourceSG"] = modelrootitem.SecondaryGroup_id
+        data["DestinationPG"] = None
+        data["DestinationSG"] = None
+
+        mrilist.append(data)
+
+    if mrilist != []:
+        treemodel.createLinkedTree(mrilist)
+        self.ui.tvAgenda_2.setModel(treemodel)
+
+        self.ui.tvAgenda_2.expandToDepth(2)
+
+    #self.ui.tvAgenda_2.setAlternatingRowColors(bool(ProgramSettings.loadDefaultValue(self.settingDatabase, self.settingTable, 1, "Show Alternating Row Colors")))
+
+    self.ui.tvAgenda_2.setColumnWidth(0,250)
+    self.ui.tvAgenda_2.setColumnWidth(1,50)
+    self.ui.tvAgenda_2.setColumnWidth(2,50)
+    '''self.ui.tvAgenda_2.clicked.connect(self.on_treeView_Clicked)
+    self.ui.tvAgenda_2.doubleClicked.connect(self.on_treeView_DoubleClicked)
+    self.ui.cmdTreeViewRefresh.clicked.connect(self.on_cmdTreeViewRefresh_Clicked)'''
+    self.ui.tvAgenda_2.setStyleSheet("QTreeView::item:hover{background-color:#999966;}")
+
+{endregion}

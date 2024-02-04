@@ -1,0 +1,18 @@
+{BeginWidgetList}
+{Select Case}
+{Case} {QCombobox}
+def on_{RecordGroup.Form.WidgetName}_{RecordGroup.Form.GetString}(self):
+	pass
+{Case} {QLineEdit}
+def on_{RecordGroup.Form.WidgetName}_{RecordGroup.Form.GetString}(self):
+	pass
+
+{Case} {QListView}
+def on_{RecordGroup.Form.WidgetName}_{RecordGroup.Form.GetString}(self):
+	pass
+
+{Case} {TableView}
+def on_{RecordGroup.Form.WidgetName}_{RecordGroup.Form.GetString}(self):
+	pass
+
+{EndWidgetList}

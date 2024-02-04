@@ -1,0 +1,13 @@
+def on_tblFormItems_clicked(self):
+    self.init_WidgetForm()
+    self.ui.blockWSignals(True)
+    data = {}
+    data["row"] = self.ui.tblFormItems.selectionModel().currentIndex().row()
+    data["column"] = self.ui.tblFormItems.selectionModel().currentIndex().column()
+    data["column"] = self.ui.tblFormItems.selectionModel().currentIndex().column()
+    data["Value"] = self.ui.tblFormItems.model().index(data["row"], data["column"], None).data()
+    data["id"] = self.ui.tblFormItems.model().index(data["row"], 0, None).data()
+
+    self.ui.txtFormItem_id.setText(str(data["id"]))
+
+    self.on_FIForm_load(int(data["id"]))

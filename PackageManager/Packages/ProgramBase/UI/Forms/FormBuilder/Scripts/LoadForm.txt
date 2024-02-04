@@ -1,0 +1,7 @@
+def on_FTForm_load(self, Record_id):
+    self.ui.init{RecordGroup.Abbreviation}Form()
+    qryRecord = session.query(FormFunctionTemplate).filter_by(id=Record_id).first()
+    if qryRecord.Filename is not None:
+         {BeginWidgetList}
+         {RecordGroup.Form.LinkName}{RecordGroup.Form.UpdateString}
+         {EndWidgetList}

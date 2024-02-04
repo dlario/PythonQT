@@ -1,0 +1,37 @@
+{BeginWidgetList}
+{Select Case WidgetType}
+{case QLineEdit}
+if self.ui. chkPAPositionFilter.isChecked():
+    controlvalue = self.ui.cmbPAPosition.model().index(cmbPAPosition.currentIndex(), 0, None).data()
+    qryRecord = qryRecord.filter(PersonAffiliation.Position ==  (controlvalue))
+{end case}
+
+{case QCombobox}
+if self.ui. chkPAPositionFilter.isChecked():
+    controlvalue = self.ui.cmbPAPosition.model().index(cmbPAPosition.currentIndex(), 0, None).data()
+    qryRecord = qryRecord.filter(PersonAffiliation.Position ==  (controlvalue))
+{end case}
+
+{case QDate}
+@pyqtSlot()
+def on_dteMeetingDate_valueChanged(self):
+    self.ui.cldrMeeting.blockSignals(True)
+    self.ui.cldrMeeting.setSelectedDate(self.ui.dteMeetingDate.date())
+    self.ui.cldrMeeting.blockSignals(False)
+    self.meetingDict["MeetingDate"] = self.ui.dteMeetingDate.date().toPyDate()
+    self.savemeetingDict()
+{end case}
+
+{case QDateTime}
+if self.ui. chkPAPositionFilter.isChecked():
+    controlvalue = self.ui.dtePATermStart.dateTime()
+    qryRecord = qryRecord.filter(PersonAffiliation.Position ==  (controlvalue))
+{end case}
+
+{case QTime}
+@pyqtSlot()
+def on_deMeetingStartTime_timeChanged(self):
+    self.meetingDict["MeetingStartTime"] = self.ui.deMeetingStartTime.time().toPyTime()
+    self.savemeetingDict()
+{end case}
+{end select}

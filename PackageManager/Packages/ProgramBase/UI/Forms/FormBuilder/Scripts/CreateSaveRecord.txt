@@ -1,0 +1,12 @@
+def createsave{RecordGroup.Title}Form(self, Record_id=None):
+    if Record_id is None:
+        session.begin()
+        qryRecord = session.query({RecordGroup.Table}).filter_by(id=Record_id).first()
+        session.add(qryRecord)
+        session.commit()
+        session.flush()
+    else:
+        qryRecord = session.query({RecordGroup.Table}).filter_by(id=Record_id).first()
+        session.begin()
+
+       if self.{RecordGroup.Table}Dict["RecordGroup"] is not None: qryRecord.RecordGroupID = self.{RecordGroup.Abbreviation}Dict[{RecordGroup.Table}"]["Record_id"]

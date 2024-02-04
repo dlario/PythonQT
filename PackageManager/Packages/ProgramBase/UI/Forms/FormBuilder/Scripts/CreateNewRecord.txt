@@ -1,0 +1,13 @@
+@pyqtSlot()
+def on_cmdCreateNew{RecordGroup.Title}_clicked(self):
+    self.init{RecordGroup.Abbreviation}Form()
+    self.init{RecordGroup.Abbreviation}Dict()
+    
+    session.begin()
+    qryRecord = {RecordGroup.Table}()
+    session.add(qryRecord)
+    session.commit()
+    session.flush()
+   
+    self.on_{RecordGroup.Abbreviation}Table_load()
+    self.ui.txt{RecordGroup.Abbreviation}_id.setText(str(qryRecord.id))

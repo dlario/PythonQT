@@ -1,0 +1,4 @@
+def on_FITable_load(self):
+    qryRecord = session.query(FormItemData.id, FormItemData.RecordGroupID, FormItemData.ItemName)
+    self.ui.tblFormItems.setModel(QueryTableModel(qryRecord))
+    self.ui.tblFormItems.setColumnWidth(0,0)

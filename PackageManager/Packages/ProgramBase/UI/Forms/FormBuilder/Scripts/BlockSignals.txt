@@ -1,0 +1,4 @@
+def block{RecordGroup.Abbreviation}Signals(self, Value):
+    {BeginWidgetList}
+    self.ui.{RecordGroup.Form.WidgetName}.blockSignals(Value)
+    {EndWidgetList}

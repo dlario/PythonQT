@@ -1,0 +1,7 @@
+def init_{RecordGroup.Abbreviation}Dict(self):
+    self.block{RecordGroup.Abbreviation}Signals(True)
+    self.{RecordGroup.Abbreviation}Dict = {}
+    {BeginWidgetList}
+    self.{RecordGroup.Abbreviation}Dict["{RecordGroup.Form.LinkName}"] =  {RecordGroup.Form.GetString}
+    {EndWidgetList}
+    self.block{RecordGroup.Abbreviation}Signals(False)

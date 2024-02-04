@@ -1,0 +1,3 @@
+{BeginWidgetList}
+{SubFunction(LoadData[{RecordGroup.Form.WidgetType}])}
+{EndWidgetList}
