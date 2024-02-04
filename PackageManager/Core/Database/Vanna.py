@@ -1,0 +1,1 @@
+#https://www.marktechpost.com/2024/01/20/meet-vanna-an-open-source-python-rag-retrieval-augmented-generation-framework-for-sql-generation/

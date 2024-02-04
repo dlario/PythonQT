@@ -149,7 +149,7 @@ from PackageManager.Packages.OpenCV.Database import DefaultData
 basepath = os.path.dirname(os.path.abspath(__file__))
 settingDatabase = "DSSettings.db"
 settingTable = "tblProgramSettings"
-from PackageManager.Packages.ProjectList.Resources import ICON_DIR, RESOURCES_DIR
+from PackageManager.Packages.ProgramBase.Resources import ICON_DIR, RESOURCES_DIR
 # endregion
 
 def winTitle():

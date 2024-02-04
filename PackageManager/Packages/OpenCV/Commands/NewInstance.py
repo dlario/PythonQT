@@ -17,7 +17,7 @@ __author__ = 'David Lario'
 
 
 from PackageManager.UI.Commands.Command import ShelfTool
-from PackageManager.Packages.ProjectList import AppMDI
+from PackageManager.Packages.ProgramBase import AppMDI
 
 class NewInstance(ShelfTool):
 

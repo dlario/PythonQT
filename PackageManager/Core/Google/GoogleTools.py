@@ -14,25 +14,3 @@ __author__ = 'David Lario'
 
 ## Revision History
 ## October 27, 2023 - David James Lario - Created
-
-from PackageManager.UI.Commands.Command import ShelfTool
-
-class NewInstance(ShelfTool):
-
-    def __init__(self):
-        super(NewInstance, self).__init__()
-
-    @staticmethod
-    def name():
-        return str("NewInstance")
-
-    @staticmethod
-    def category():
-        return None
-
-    @staticmethod
-    def keywords():
-        return None
-
-    def do(self):
-        self.PackageInstance.instance.newInstance()

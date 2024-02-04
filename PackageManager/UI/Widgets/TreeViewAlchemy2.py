@@ -37,8 +37,6 @@ from PackageManager.Core.Database import DatabaseTools
 #Import Tables
 from PackageManager.Packages.ProgramBase.Database.dbMaster import *
 
-from PackageManager.Packages.ProjectList.Database.dbFinance import *
-
 #Default Settings
 basepath = os.path.dirname(os.path.abspath(__file__))
 settingDatabase = "DSSettings.db"

@@ -73,7 +73,7 @@ settingTable = "tblProgramSettings"
 from PackageManager.Packages.StockTrader.Resources import ICON_DIR
 
 from PackageManager.Packages.StockTrader.Database.dbStockTrader import *
-from PackageManager.Packages.ProjectList.Database.dbFinance import Currency
+#from PackageManager.Packages.ProgramBase.Database.dbFinance import Currency
 
 class StockTrader(QMdiSubWindow):
     def __init__(self, main, parent):

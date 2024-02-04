@@ -1,5 +1,5 @@
-## Copyright 2023 David Lario
-__author__ = 'David Lario'
+## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
+
 ## Licensed under the Apache License, Version 2.0 (the "License");
 ## you may not use this file except in compliance with the License.
 ## You may obtain a copy of the License at
@@ -12,27 +12,10 @@ __author__ = 'David Lario'
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-## Revision History
-## October 27, 2023 - David James Lario - Created
 
-from PackageManager.UI.Commands.Command import ShelfTool
+"""Core functionality of the PackageManager.
 
-class NewInstance(ShelfTool):
-
-    def __init__(self):
-        super(NewInstance, self).__init__()
-
-    @staticmethod
-    def name():
-        return str("NewInstance")
-
-    @staticmethod
-    def category():
-        return None
-
-    @staticmethod
-    def keywords():
-        return None
-
-    def do(self):
-        self.PackageInstance.instance.newInstance()
+This module will be eventually moved to own repo.
+"""
+from PackageManager.Core import Common
+from PackageManager.Core import Common

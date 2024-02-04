@@ -116,8 +116,8 @@ class PackageManager(QMainWindow):
         #self.setDockOptions(QMainWindow.AnimatedDocks | QMainWindow.AllowNestedDocks)
 
         defaultpaths = GET_DEFAULT_PATHS()
-        self.packagelist = ["ProgramBase", "ProjectList", "Template",
-                            "PyFlowPkg", "XFiles", "StockTrader", "TaskManager"]
+        self.packagelist = ["ProgramBase", "Template",
+                            "PyFlowPkg", "XFiles", "StockTrader"]
         self.windowMapper = QSignalMapper()
 
         # Loads the packages ready to be initiated

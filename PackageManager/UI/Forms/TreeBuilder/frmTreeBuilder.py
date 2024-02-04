@@ -17,8 +17,8 @@ from PackageManager.Core import ProgramSettings
 from PackageManager.UI.Forms.ListEditor import frmListEditor
 from PackageManager.Core.Common import myListToStr, strToMyList
 from PackageManager.Packages.ProgramBase.Database.dbMaster import *
-from PackageManager.Packages.TaskManager.Database.dbTracking import *
-from PackageManager.Packages.ProjectList.Database.dbEquipment import *
+#from PackageManager.Packages.TaskManager.Database.dbTracking import *
+#from PackageManager.Packages.ProjectList.Database.dbEquipment import *
 
 class TreeBuilderEntity():
 

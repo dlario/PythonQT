@@ -29,7 +29,6 @@ from PySide6.QtCore import (QSize, Qt, QPoint)
 from PySide6.QtCore import (QFile, QFileInfo, QTextStream)
 from PySide6.QtWidgets import (QApplication, QFileDialog, QMdiSubWindow, QMessageBox)
 
-from PackageManager.Core.MDIDocument import MDIMain, MDIChild
 from PackageManager.Core.PathsRegistry import PathsRegistry
 from Temp.version import *
 from PackageManager.UI.EditorHistory import EditorHistory
@@ -39,14 +38,14 @@ try:
 except:
     pass
 
+#RESOURCES_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "UI/resources/")
 from PackageManager.ConfigManager import ConfigManager
-from PackageManager.Packages.ProgramBase.Database.dbMaster import *
-from PackageManager.Packages.StockTrader.Database import DefaultData
 
 #Database Import
 
 def winTitle():
     return "Project List v{0}".format(currentVersion().__str__())
+
 def generateRandomString(numSymbolds=5):
     result = ""
     for i in range(numSymbolds):
@@ -54,56 +53,53 @@ def generateRandomString(numSymbolds=5):
         result += letter
     return result
 
-class MDIMain(MDIMain):
+class MDIMain():
     appInstance = None
-    def __init__(self, main, parent=None):
-        super(MDIMain, self).__init__(parent=parent)
 
+    def __init__(self, main, parent=None, software=""):
+        super(MDIMain, self).__init__()
         self.uuid = uuid.uuid4()
         self.parent = parent
         self.main = main
         settings = ConfigManager().getSettings("APP_STATE")
         self.currentFileName = None
-        self.initDatabase()
+        self.name_filter = "pygraph"
+        self.name_description = "PyFlow Graph"
 
-    def about(self):
-        QMessageBox.about(self, "About Template",
-                          "The <b>Template</b> is a template for making packages "
-                          "change this accordingly.")
-
-    def newFile(self):
-        pass
-
-    def CreateInstance(self, main, parent):
+    def NewInstance(self, main, parent=None):
         instance = MDIChild(main, parent)
         return instance
 
-    def close(self):
-        pass
+    def getFilePaths(self):
 
-    def closeAll(self):
-        pass
+        extraPackagePaths = []
+        extraPathsString = ConfigManager().getPrefsValue("PREFS", "General/ExtraPackageDirs")
+        if extraPathsString is not None:
+            extraPathsString = extraPathsString.rstrip(";")
+            extraPathsRaw = extraPathsString.split(";")
+            for rawPath in extraPathsRaw:
+                if os.path.exists(rawPath):
+                    extraPackagePaths.append(os.path.normpath(rawPath))
+        return extraPackagePaths
 
-    def open(self):
-        pass
+    def newFile(self):
+        self.isUntitled = True
 
-    def initDefaultData(self):
-        class Market(MainBase):
-            __tablename__ = 'lstmarket'
-            id = Column(Integer, primary_key=True)
-            NameText = Column(String(50))
-
-        listCurrency = ["CAD", "USD", "EUR", "GBP", "AUD", "NZD", "JPY", "CHF"]
-        for currency in listCurrency:
-            newCurrency = Currency(NameText=currency)
-            self.session.add(newCurrency)
-            self.session.commit()
 
     def load(self):
-        name_filter = "Graph files (*.pygraph)"
-        savepath = QFileDialog.getOpenFileName(filter=name_filter)
+        savepath = QFileDialog.getOpenFileName(filter=self.name_filter)
 
-    def loadFile(self, filePath):
+
+    def currentFile(self):
+        return self.currentFileName
+
+    def strippedName(self, fullFileName):
+        return QFileInfo(fullFileName).fileName()
+
+    def userFriendlyCurrentFile(self):
+        return self.strippedName(self.currentFileName)
+
+    def loadFromFile(self, filePath):
         with open(filePath, 'r') as f:
             data = json.load(f)
             self.loadFromData(data, clearHistory=True)
@@ -115,8 +111,7 @@ class MDIMain(MDIMain):
             self.parent.statusBar().showMessage("File saved", 2000)
 
             if save_as:
-                name_filter = "Graph files (*.pygraph)"
-                savepath = QFileDialog.getSaveFileName(filter=name_filter)
+                savepath = QFileDialog.getSaveFileName(filter=self.name_filter)
                 if type(savepath) in [tuple, list]:
                     pth = savepath[0]
                 else:
@@ -127,8 +122,7 @@ class MDIMain(MDIMain):
                     self.currentFileName = None
             else:
                 if self.currentFileName is None:
-                    name_filter = "Graph files (*.pygraph)"
-                    savepath = QFileDialog.getSaveFileName(filter=name_filter)
+                    savepath = QFileDialog.getSaveFileName(filter=self.name_filter)
                     if type(savepath) in [tuple, list]:
                         pth = savepath[0]
                     else:
@@ -141,8 +135,8 @@ class MDIMain(MDIMain):
             if not self.currentFileName:
                 return False
 
-            if not self.currentFileName.endswith(".pygraph"):
-                self.currentFileName += ".pygraph"
+            if not self.currentFileName.endswith(self.name_filter):
+                self.currentFileName += self.name_filter
 
             if not self.currentFileName == '':
                 with open(self.currentFileName, 'w') as f:
@@ -157,60 +151,6 @@ class MDIMain(MDIMain):
         if self.activeMdiChild() and self.activeMdiChild().saveAs():
             self.statusBar().showMessage("File saved", 2000)
 
-    def initDatabase(self):
-        # Loading The Database
-        self.sqlRegister = self.main.instance.sqlRegister
-        # This is just an example of how to register a database
-        base = "MainBase"
-        name = "self.session"
-        dbtype = "mysql+pymysql"
-        login = ""
-        password = ""
-        location = "127.0.0.1"
-        port = "3306"
-        schema = "PackageManager"
-        key = None,
-        sshTunnel = None
-
-        self.sqlRegister.registarInstance("Location1", "StockMarket", "ASAP", self)
-        self.sqlRegister.sqlDict["Location1"].createSession(base, name, dbtype, login, password, location, port,
-                                                                   schema, key, sshTunnel)
-        # This is the table coordinator
-        self.sqlRegister.masterself.session = self.sqlRegister.sqlDict["Location1"].self.session
-        self.sqlRegister.masterBase = self.sqlRegister.sqlDict["Location1"].base
-        self.session = self.sqlRegister.sqlDict["Location1"].self.session
-        self.base = self.sqlRegister.sqlDict["Location1"].base
-
-        self.sqlRegister.masterTable = "MasterTable"
-        self.sqlRegister.masterFieldList = "MasterFieldList"
-
-    def updateDatabaseController(self):
-        self.sqlRegister.updateDatabaseController(self)
-
-    def dropTables(self):
-        defaultdata = dbAllListsDefaultData.defaultData()
-
-        for item, value in enumerate(defaultdata):
-            table = defaultdata[value]["Table"]
-            try:
-                self.session.query(table).delete()
-                self.session.commit()
-            except:
-                self.session.rollback()
-
-    def updateDatabaseController(self):
-        self.sqlRegister.updateDatabaseController(self)
-
-    def dropTables(self):
-        defaultdata = dbAllListsDefaultData.defaultData()
-
-        for item, value in enumerate(defaultdata):
-            table = defaultdata[value]["Table"]
-            try:
-                self.session.query(table).delete()
-                self.session.commit()
-            except:
-                self.session.rollback()
 
 class MDIChild(QMdiSubWindow):
     sequenceNumber = 1
@@ -218,12 +158,12 @@ class MDIChild(QMdiSubWindow):
     fileBeenLoaded = QtCore.Signal()
 
     def __init__(self, main, parent):
-        super(MDIChild, self).__init__()
+        super(MDIChild, self).__init__(parent)
         settings = ConfigManager().getSettings("APP_STATE")
+        self.uuid = uuid.uuid4()
         self.PackageName = "Template-MDIChild"
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.isUntitled = True
-        #self.instance = instance
         self.main = main
         self.parent = parent
 
@@ -233,12 +173,21 @@ class MDIChild(QMdiSubWindow):
         self.edHistory.statePushed.connect(self.historyStatePushed)
         self.undoStack = QtGui.QUndoStack(self)
 
-        self.canvasWidget.setObjectName("canvasWidget")
-        self.setWidget(self.canvasWidget)
-
     def CreateInstance(main, parent):
         instance = MDIChild(main, parent)
         return instance
+
+    def setIcon(self, Icon):
+        self.Icon = Icon
+
+    def getIcon(self, Icon):
+        return self.Icon
+
+    def getCanvas(self):
+        return self.canvasWidget.canvas
+
+    def currentFile(self):
+        return self.currentFileName
 
     def newFile(self, keepRoot=True):
         #this does not belong here.  only in the parent
@@ -301,12 +250,21 @@ class MDIChild(QMdiSubWindow):
         self.setCurrentFile(fileName)
         return True
 
+    def userFriendlyCurrentFile(self):
+        return self.strippedName(self.curFile)
+
+    def currentFile(self):
+        return self.curFile
+
     def closeEvent(self, event):
         pass
         '''if self.maybeSave():
             event.accept()
         else:
             event.ignore()'''
+
+    def documentWasModified(self):
+        self.setWindowModified(self.document().isModified())
 
     def maybeSave(self):
         if self.document().isModified():
@@ -320,6 +278,7 @@ class MDIChild(QMdiSubWindow):
 
             if ret == QMessageBox.Cancel:
                 return False
+
         return True
 
     def setCurrentFile(self, fileName):
@@ -328,6 +287,27 @@ class MDIChild(QMdiSubWindow):
         self.document().setModified(False)
         self.setWindowModified(False)
         self.setWindowTitle(self.userFriendlyCurrentFile() + "[*]")
+
+    def userFriendlyCurrentFile(self):
+        return self.strippedName(self.curFile)
+
+    def strippedName(self, fullFileName):
+        return QFileInfo(fullFileName).fileName()
+
+    def historyStatePushed(self, state):
+        if state.modifiesData():
+            self.modified = True
+            self.updateLabel()
+        # print(state, state.modifiesData())
+
+    @property
+    def modified(self):
+        return self._modified
+
+    @modified.setter
+    def modified(self, value):
+        self._modified = value
+        self.updateLabel()
 
     def updateLabel(self):
         label = "Untitled"
@@ -354,6 +334,43 @@ class MDIChild(QMdiSubWindow):
             if not os.path.exists(self.currentTempDir):
                 os.makedirs(self.currentTempDir)
         return self.currentTempDir
+
+
+    def getMenuBar(self):
+        return self.menuBar
+
+    def registerToolInstance(self, instance):
+        """Registers tool instance reference
+
+        This needed to prevent classes from being garbage collected and to save widgets state
+
+        Args:
+
+            instance (ToolBase): Tool to be registered
+        """
+        self._tools.add(instance)
+
+    def unregisterToolInstance(self, instance):
+        if instance in self._tools:
+            self._tools.remove(instance)
+
+    def _registerCommandInstance(self, instance):
+        """Registers tool instance reference
+
+        This needed to prevent classes from being garbage collected and to save widgets state
+
+        Args:
+
+            instance (ToolBase): Tool to be registered
+        """
+        self._commands.add(instance)
+
+    def un_registerCommandInstance(self, instance):
+        if instance in self._commands:
+            self._commands.remove(instance)
+
+    def showPreferencesWindow(self):
+        self.preferencesWindow.show()
 
 
     def loadFromFileChecked(self, filePath):

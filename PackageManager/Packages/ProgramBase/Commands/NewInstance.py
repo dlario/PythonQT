@@ -16,7 +16,6 @@ __author__ = 'David Lario'
 ## October 27, 2023 - David James Lario - Created
 
 from PackageManager.UI.Commands.Command import ShelfTool
-from PackageManager.Packages.ProjectList import AppMDI
 
 class NewInstance(ShelfTool):
 
