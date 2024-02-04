@@ -9,5 +9,5 @@ def getKeys():
     keyDict["OpenAI"] = {"OpenAIKey": "",
                 "OpenAIOrg": ""}
 
-    keyDict["MySQL"] = {"Login": "dlario", "Password": "Mechanical75"}
+    keyDict["MySQL"] = {"Login": "dlario", "Password": ""}
     return keyDict
